@@ -1,50 +1,103 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book, BookDocument } from './schemas/book.schema';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { Event } from './schemas/event.schema';
 
 @Injectable()
-export class BooksService {
-  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>) {}
+export class EventsService {
+  constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
 
-  async findAll(): Promise<Book[]> {
-    return this.bookModel.find().exec();
+  // CREATE
+  async create(createEventDto: CreateEventDto, user: { userId: string, userName: string }) {
+    const newEvent = new this.eventModel({
+      ...createEventDto,
+      creatorId: user.userId,
+      creatorUser: user.userName,
+      participants: [],
+    });
+
+    return newEvent.save();
   }
 
-  async findOne(id: string): Promise<Book> {
-    const book = await this.bookModel.findById(id).exec();
-    if (!book) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
-    }
-    return book;
+  // READ ALL
+  async findAll() {
+    return this.eventModel.find().exec();
   }
 
-  async create(createBookDto: CreateBookDto): Promise<Book> {
-    try {
-      const createdBook = new this.bookModel(createBookDto);
-      return await createdBook.save();
-    } catch (error) {
-      if (error.code === 11000) { // Codi d'error de MongoDB per a duplicats
-        throw new ConflictException("L'ISBN ja existeix.");
-      }
-      throw error; // Re-llençar altres errors
+  // READ ONE
+  async findOne(id: string) {
+    const event = await this.eventModel.findById(id).exec();
+    
+    if (!event) {
+      throw new NotFoundException(`Evento con ID ${id} no encontrado`);
     }
+    
+    return event;
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
-    const existingBook = await this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true, runValidators: true }).exec();
-    if (!existingBook) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
-    }
-    return existingBook;
+  // READ BY CREATOR
+  async findByCreator(userId: string) {
+    return this.eventModel.find({ creatorId: userId }).exec();
   }
 
-  async remove(id: string): Promise<void> {
-    const result = await this.bookModel.deleteOne({ _id: id }).exec();
-    if (result.deletedCount === 0) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
+  // UPDATE
+  async update(id: string, updateEventDto: UpdateEventDto, userId: string) {
+    const event = await this.findOne(id);
+
+    // Verificar que el usuario sea el creador
+    if (event.creatorId !== userId) {
+      throw new ForbiddenException('No tienes permiso para editar este evento');
     }
+
+    const updatedEvent = await this.eventModel
+      .findByIdAndUpdate(id, updateEventDto, { new: true })
+      .exec();
+
+    return updatedEvent;
+  }
+
+  // DELETE
+  async remove(id: string, userId: string) {
+    const event = await this.findOne(id);
+
+    // 🔒 Verificar que el usuario sea el creador
+    if (event.creatorId !== userId) {
+      throw new ForbiddenException('No tienes permiso para eliminar este evento');
+    }
+
+    await this.eventModel.findByIdAndDelete(id).exec();
+    return { message: 'Evento eliminado correctamente' };
+  }
+
+  // Apuntarse a un evento
+  async addParticipant(eventId: string, userId: string) {
+    const event = await this.findOne(eventId);
+
+    if (event.participants.includes(userId)) {
+      throw new ForbiddenException('Ya estás apuntado a este evento');
+    }
+
+    event.participants.push(userId);
+    return event.save();
+  }
+
+  // Salirse de un evento
+  async removeParticipant(eventId: string, userId: string) {
+    const event = await this.findOne(eventId);
+
+    const index = event.participants.indexOf(userId);
+    if (index === -1) {
+      throw new NotFoundException('No estás apuntado a este evento');
+    }
+
+    event.participants.splice(index, 1);
+    return event.save();
   }
 }
