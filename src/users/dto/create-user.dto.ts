@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Hobby } from '../../common/enums/hobby.enum';
 
-export class CreateBookDto {
+export class CreateUserDto {
   @IsNotEmpty({ message: 'UserName is mandatory' })
   @IsString({ message: 'UserName must be text' })
   username: string;

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { UsersService } from '../users/users.service';
 
@@ -21,13 +17,13 @@ export class AuthService {
   async register(registerDto: RegisterUserDto): Promise<{ message: string }> {
     // UsersService ja gestiona la comprovació de duplicats i el hashing
 
-    await this.usersService.create(registerDto.username, registerDto.password);
+    await this.usersService.create(registerDto);
 
     return { message: 'Usuari registrat correctament' };
   }
 
   async login(loginDto: LoginUserDto): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(loginDto.username);
+    const user = await this.usersService.findOneWithPassword(loginDto.username);
 
     if (!user) {
       throw new UnauthorizedException('Credencials invàlides');
