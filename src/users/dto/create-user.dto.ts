@@ -1,4 +1,12 @@
-import { IsString, IsNotEmpty, IsNumber, Min, Max, IsOptional, IsISBN } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  Max,
+  IsOptional,
+  IsISBN,
+} from 'class-validator';
 
 export class CreateBookDto {
   @IsNotEmpty({ message: 'El títol és obligatori' })

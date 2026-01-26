@@ -14,18 +14,18 @@ export class Book {
   @Prop({
     type: Number,
     min: [1000, "L'any ha de ser superior a 1000"],
-    max: [new Date().getFullYear(), "L'any no pot ser futur"]
+    max: [new Date().getFullYear(), "L'any no pot ser futur"],
   })
   year?: number;
 
   @Prop({
     unique: true,
     validate: {
-      validator: function(v: string) {
+      validator: function (v: string) {
         return /^(?:\d{9}[\dXx]|\d{13})$/.test(v);
       },
-      message: (props: any) => `${props.value} no és un ISBN vàlid!`
-    }
+      message: (props: any) => `${props.value} no és un ISBN vàlid!`,
+    },
   })
   isbn?: string;
 }

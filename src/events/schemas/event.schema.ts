@@ -1,33 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type BookDocument = Book & Document;
+export type EventDocument = Event & Document;
 
 @Schema({ timestamps: true }) // Habilitem timestamps per createdAt i updatedAt
-export class Book {
-  @Prop({ required: true, trim: true })
+export class Event {
+  @Prop({ required: true, trim: true, minlength: 3, maxlength: 100 })
   title: string;
 
+  @Prop({ required: true, trim: true, minlength: 10, maxlength: 500 })
+  description: string;
+
+  @Prop({ required: true })
+  category: string;
+
+  @Prop({ required: true })
+  date: string;
+
+  @Prop({ required: true, min: -90, max: 90 })
+  lat: number;
+
+  @Prop({ required: true, min: -180, max: 180 })
+  lng: number;
+
+  @Prop({ required: true })
+  creatorId: string;
+
   @Prop({ required: true, trim: true })
-  author: string;
+  creatorUser: string;
 
-  @Prop({
-    type: Number,
-    min: [1000, "L'any ha de ser superior a 1000"],
-    max: [new Date().getFullYear(), "L'any no pot ser futur"]
-  })
-  year?: number;
-
-  @Prop({
-    unique: true,
-    validate: {
-      validator: function(v: string) {
-        return /^(?:\d{9}[\dXx]|\d{13})$/.test(v);
-      },
-      message: (props: any) => `${props.value} no és un ISBN vàlid!`
-    }
-  })
-  isbn?: string;
+  @Prop({ type: [String], default: [] })
+  participants: string[];
 }
 
-export const BookSchema = SchemaFactory.createForClass(Book);
+export const EventSchema = SchemaFactory.createForClass(Event);
