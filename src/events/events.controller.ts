@@ -1,62 +1,110 @@
-// import { Controller, Get, Post, Put, Delete, Param, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
-// import { EventsService } from './events.service';
-// import { CreateEventDto } from './dto/create-event.dto';
-// import { UpdateEventDto } from './dto/update-event.dto';
-// import { Event } from './schemas/event.schema';
-// import { ApiTags, ApiResponse, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  // Req,
+  // UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { EventsService } from './events.service';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
+// import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'; // Cuando se implemente
 
-// @ApiTags('Llibres') // Agrupa les endpoints a Swagger
-// @Controller('Events')
-// export class EventsController {
-//   constructor(private readonly EventsService: EventsService) {}
+@Controller('events')
+export class EventsController {
+  constructor(private readonly eventsService: EventsService) {}
 
-//   @Get()
-//   @ApiOperation({ summary: 'Obté tots els llibres' })
-//   @ApiResponse({ status: 200, description: 'Llistat de llibres', type: [Event] })
-//   async findAll(): Promise<Event[]> {
-//     return this.EventsService.findAll();
-//   }
+  // CREATE - Crear un evento
+  @Post()
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  async create(
+    @Body() createEventDto: CreateEventDto,
+    // @Req() req, // Aquí vendrá req.user del JWT
+  ) {
+    // TEMPORAL: mientras no tenga JWT, simula el usuario
+    const mockUser = {
+      userId: 'temp-user-id-123',
+      userName: 'usuarioTemporal',
+    };
 
-//   @Get(':id')
-//   @ApiOperation({ summary: 'Obté un llibre per ID' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiResponse({ status: 200, description: 'Dades del llibre', type: Event })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   async findOne(@Param('id') id: string): Promise<Event> {
-//     return this.EventsService.findOne(id);
-//   }
+    return this.eventsService.create(createEventDto, mockUser);
+    // return this.eventsService.create(createEventDto, req.user); // 👈 Cuando tengas JWT
+  }
 
-//   @Post()
-//   @ApiOperation({ summary: 'Crea un nou llibre' })
-//   @ApiBody({ type: CreateEventDto, description: 'Dades del llibre a crear' })
-//   @ApiResponse({ status: 201, description: 'Llibre creat correctament', type: Event })
-//   @ApiResponse({ status: 400, description: 'Dades invàlides' })
-//   @ApiResponse({ status: 409, description: 'L\'ISBN ja existeix' }) // Per a ConflictException
-//   @HttpCode(HttpStatus.CREATED) // Retorna 201 Created
-//   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true })) // Validació de DTO
-//   async create(@Body() createEventDto: CreateEventDto): Promise<Event> {
-//     return this.EventsService.create(createEventDto);
-//   }
+  // READ - Obtener todos los eventos
+  @Get()
+  async findAll() {
+    return this.eventsService.findAll();
+  }
 
-//   @Put(':id')
-//   @ApiOperation({ summary: 'Actualitza un llibre existent' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiBody({ type: UpdateEventDto, description: 'Dades del llibre a actualitzar' })
-//   @ApiResponse({ status: 200, description: 'Llibre actualitzat', type: Event })
-//   @ApiResponse({ status: 400, description: 'Dades invàlides' })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
-//   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto): Promise<Event> {
-//     return this.EventsService.update(id, updateEventDto);
-//   }
+  // READ - Obtener un evento por ID
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.eventsService.findOne(id);
+  }
 
-//   @Delete(':id')
-//   @ApiOperation({ summary: 'Elimina un llibre' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiResponse({ status: 204, description: 'Llibre eliminat correctament' })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   @HttpCode(HttpStatus.NO_CONTENT) // Retorna 204 No Content per a DELETE reeixit
-//   async remove(@Param('id') id: string): Promise<void> {
-//     await this.EventsService.remove(id);
-//   }
-// }
+  // READ - Obtener eventos del usuario autenticado
+  @Get('user/my-events')
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  // async findMyEvents(@Req() req) {
+  async findMyEvents() {
+    // TEMPORAL
+    const mockUserId = 'temp-user-id-123';
+    return this.eventsService.findByCreator(mockUserId);
+    // return this.eventsService.findByCreator(req.user.userId); // Cuando tenga JWT
+  }
+
+  // UPDATE - Actualizar un evento
+  @Put(':id')
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  async update(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+    //@Req() req,
+  ) {
+    // TEMPORAL
+    const mockUserId = 'temp-user-id-123';
+    return this.eventsService.update(id, updateEventDto, mockUserId);
+    // return this.eventsService.update(id, updateEventDto, req.user.userId); // Cuando tenga JWT
+  }
+
+  // DELETE - Eliminar un evento
+  @Delete(':id')
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  @HttpCode(HttpStatus.NO_CONTENT) // Devuelve 204 en lugar de 200
+  // async remove(@Param('id') id: string, @Req() req) {
+  async remove(@Param('id') id: string) {
+    // TEMPORAL
+    const mockUserId = 'temp-user-id-123';
+    return this.eventsService.remove(id, mockUserId);
+    // return this.eventsService.remove(id, req.user.userId); // Cuando tenga JWT
+  }
+
+  // BONUS - Apuntarse a un evento
+  @Post(':id/join')
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  // async joinEvent(@Param('id') id: string, @Req() req) {
+  async joinEvent(@Param('id') id: string) {
+    // TEMPORAL
+    const mockUserId = 'temp-user-id-123';
+    return this.eventsService.addParticipant(id, mockUserId);
+    // return this.eventsService.addParticipant(id, req.user.userId); // Cuando tenga JWT
+  }
+
+  // BONUS - Salirse de un evento
+  @Delete(':id/leave')
+  // @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  // async leaveEvent(@Param('id') id: string, @Req() req) {
+  async leaveEvent(@Param('id') id: string) {
+    // TEMPORAL
+    const mockUserId = 'temp-user-id-123';
+    return this.eventsService.removeParticipant(id, mockUserId);
+    // return this.eventsService.removeParticipant(id, req.user.userId); // Cuando tenga JWT
+  }
+}
