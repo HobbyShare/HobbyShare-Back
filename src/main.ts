@@ -17,7 +17,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, // Elimina propietats no definides en el DTO
       forbidNonWhitelisted: true, // Llença un error si hi ha propietats no definides
-      transform: true, // Transforma automàticament els tipus dels DTOs
+      transform: true, // Transforma automàticament els tipus dels DTOs xxxx
     }),
   );
 

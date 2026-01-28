@@ -1,102 +1,38 @@
-// import {
-//   Controller,
-//   Get,
-//   Post,
-//   Put,
-//   Delete,
-//   Param,
-//   Body,
-//   HttpCode,
-//   HttpStatus,
-//   UsePipes,
-//   ValidationPipe,
-// } from '@nestjs/common';
-// import { BooksService } from './books.service';
-// import { CreateBookDto } from './dto/create-book.dto';
-// import { UpdateBookDto } from './dto/update-book.dto';
-// import { Book } from './schemas/book.schema';
-// import {
-//   ApiTags,
-//   ApiResponse,
-//   ApiOperation,
-//   ApiParam,
-//   ApiBody,
-// } from '@nestjs/swagger';
+import { Hobby } from './../common/enums/hobby.enum';
+import { ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserDocument } from './schemas/user.schema';
+import { UserResponseDto } from './dto/user-response.dto';
+import { Types } from 'mongoose';
 
-// @ApiTags('Llibres') // Agrupa les endpoints a Swagger
-// @Controller('books')
-// export class BooksController {
-//   constructor(private readonly booksService: BooksService) {}
+@ApiTags('Users') // Agrupa les endpoints a Swagger
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
-//   @Get()
-//   @ApiOperation({ summary: 'Obté tots els llibres' })
-//   @ApiResponse({ status: 200, description: 'Llistat de llibres', type: [Book] })
-//   async findAll(): Promise<Book[]> {
-//     return this.booksService.findAll();
-//   }
+  @Post('register')
+  async register(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
+    const user: UserDocument = await this.usersService.create(createUserDto);
 
-//   @Get(':id')
-//   @ApiOperation({ summary: 'Obté un llibre per ID' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiResponse({ status: 200, description: 'Dades del llibre', type: Book })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   async findOne(@Param('id') id: string): Promise<Book> {
-//     return this.booksService.findOne(id);
-//   }
+    const userObject = user.toObject() as {
+      _id: Types.ObjectId;
+      username: string;
+      name: string;
+      email: string;
+      hobbies: Hobby[];
+      password?: string;
+    };
 
-//   @Post()
-//   @ApiOperation({ summary: 'Crea un nou llibre' })
-//   @ApiBody({ type: CreateBookDto, description: 'Dades del llibre a crear' })
-//   @ApiResponse({
-//     status: 201,
-//     description: 'Llibre creat correctament',
-//     type: Book,
-//   })
-//   @ApiResponse({ status: 400, description: 'Dades invàlides' })
-//   @ApiResponse({ status: 409, description: "L'ISBN ja existeix" }) // Per a ConflictException
-//   @HttpCode(HttpStatus.CREATED) // Retorna 201 Created
-//   @UsePipes(
-//     new ValidationPipe({
-//       whitelist: true,
-//       forbidNonWhitelisted: true,
-//       transform: true,
-//     }),
-//   ) // Validació de DTO
-//   async create(@Body() createBookDto: CreateBookDto): Promise<Book> {
-//     return this.booksService.create(createBookDto);
-//   }
-
-//   @Put(':id')
-//   @ApiOperation({ summary: 'Actualitza un llibre existent' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiBody({
-//     type: UpdateBookDto,
-//     description: 'Dades del llibre a actualitzar',
-//   })
-//   @ApiResponse({ status: 200, description: 'Llibre actualitzat', type: Book })
-//   @ApiResponse({ status: 400, description: 'Dades invàlides' })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   @UsePipes(
-//     new ValidationPipe({
-//       whitelist: true,
-//       forbidNonWhitelisted: true,
-//       transform: true,
-//     }),
-//   )
-//   async update(
-//     @Param('id') id: string,
-//     @Body() updateBookDto: UpdateBookDto,
-//   ): Promise<Book> {
-//     return this.booksService.update(id, updateBookDto);
-//   }
-
-//   @Delete(':id')
-//   @ApiOperation({ summary: 'Elimina un llibre' })
-//   @ApiParam({ name: 'id', description: 'ID del llibre', type: String })
-//   @ApiResponse({ status: 204, description: 'Llibre eliminat correctament' })
-//   @ApiResponse({ status: 404, description: 'Llibre no trobat' })
-//   @HttpCode(HttpStatus.NO_CONTENT) // Retorna 204 No Content per a DELETE reeixit
-//   async remove(@Param('id') id: string): Promise<void> {
-//     await this.booksService.remove(id);
-//   }
-// }
+    return {
+      id: userObject._id.toString(),
+      username: userObject.username, // Mapeo del nombre de campo
+      name: userObject.name,
+      email: userObject.email,
+      hobbies: userObject.hobbies,
+    };
+  }
+}
