@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Hobby } from 'src/common/enums/hobby.enum';
 
 export type EventDocument = Event & Document;
 
@@ -11,8 +12,8 @@ export class Event {
   @Prop({ required: true, trim: true, minlength: 10, maxlength: 500 })
   description: string;
 
-  @Prop({ required: true })
-  category: string;
+  @Prop({ type: [String], enum: Hobby, required: true })
+  hobby: Hobby[];
 
   @Prop({ required: true })
   date: string;

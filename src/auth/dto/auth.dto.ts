@@ -12,10 +12,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Hobby } from 'src/common/enums/hobby.enum';
 
 export class RegisterUserDto {
-  @ApiProperty({ description: 'UserName', example: 'janedoe' })
-  @IsNotEmpty({ message: 'UserName is mandatory' })
-  @IsString({ message: 'UserName must be text' })
-  username: string;
+  @ApiProperty({ description: 'userName', example: 'janedoe' })
+  @IsNotEmpty({ message: 'userName is mandatory' })
+  @IsString({ message: 'userName must be text' })
+  userName: string;
 
   @ApiProperty({ description: 'Name', example: 'Jane Doe' })
   @IsNotEmpty({ message: 'Name is mandatory' })
@@ -40,9 +40,9 @@ export class RegisterUserDto {
 }
 
 export class LoginUserDto {
-  @ApiProperty({ description: 'UserName', example: 'janedoe' })
-  @IsNotEmpty({ message: 'UserName is mandatory' })
-  username: string;
+  @ApiProperty({ description: 'userName', example: 'janedoe' })
+  @IsNotEmpty({ message: 'userName is mandatory' })
+  userName: string;
 
   @ApiProperty({ description: 'Password', example: 'passwordSegura123' })
   @IsNotEmpty({ message: 'Password is mandatory' })

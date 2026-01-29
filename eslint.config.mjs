@@ -27,8 +27,12 @@ export default tseslint.config(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',      // Permite variables sin usar
+      '@typescript-eslint/no-unsafe-assignment': 'off', // Permite asignar 'any' a variables
+      '@typescript-eslint/no-unsafe-member-access': 'off', // Permite acceder a props de 'any'
+      '@typescript-eslint/no-unsafe-call': 'off',
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },

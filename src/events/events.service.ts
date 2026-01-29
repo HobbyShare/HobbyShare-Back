@@ -20,7 +20,7 @@ export class EventsService {
       ...createEventDto,
       creatorId: user.userId,
       creatorUser: user.userName,
-      participants: [],
+      
     });
 
     return newEvent.save();

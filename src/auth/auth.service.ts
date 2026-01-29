@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginUserDto): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOneWithPassword(loginDto.username);
+    const user = await this.usersService.findOneWithPassword(loginDto.userName);
 
     if (!user) {
       throw new UnauthorizedException('Credencials invàlides');
@@ -40,7 +40,7 @@ export class AuthService {
       throw new UnauthorizedException('Credencials invàlides');
     } // El payload del JWT hauria de ser lleuger i no contenir informació sensible
 
-    const payload = { username: user.username, sub: user._id };
+    const payload = { userName: user.userName, sub: user._id };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
