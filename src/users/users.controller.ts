@@ -20,7 +20,7 @@ export class UsersController {
 
     const userObject = user.toObject() as {
       _id: Types.ObjectId;
-      username: string;
+      userName: string;
       name: string;
       email: string;
       hobbies: Hobby[];
@@ -29,7 +29,7 @@ export class UsersController {
 
     return {
       id: userObject._id.toString(),
-      username: userObject.username, // Mapeo del nombre de campo
+      userName: userObject.userName, // Mapeo del nombre de campo
       name: userObject.name,
       email: userObject.email,
       hobbies: userObject.hobbies,

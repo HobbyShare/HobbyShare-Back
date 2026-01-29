@@ -30,17 +30,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   } // El mètode `validate` es crida un cop el token és decodificat i verificat
 
-  async validate(payload: { username: string; sub: string }) {
-    // `payload` és l'objecte que vam signar en el login: { username, sub: _id }
+  async validate(payload: { userName: string; sub: string }) {
+    // `payload` és l'objecte que vam signar en el login: { userName, sub: _id }
 
     // Aquí pots fer una comprovació addicional, com buscar l'usuari a la BD
 
-    const user = await this.usersService.findOne(payload.username);
+    const user = await this.usersService.findOne(payload.userName);
 
     if (!user) {
       throw new UnauthorizedException('Usuari no trobat o token invàlid.');
     } // Retornar l'usuari adjunta l'objecte d'usuari a `req.user`
 
-    return user;
+    return {
+      userId: payload.sub, // ⬅️ El _id del usuario
+      userName: payload.userName, // ⬅️ El username
+      _id: user._id, // ⬅️ También incluir el objeto completo si lo necesitas
+    };
   }
 }

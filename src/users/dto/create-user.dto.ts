@@ -10,12 +10,12 @@ import {
 import { Hobby } from '../../common/enums/hobby.enum';
 
 export class CreateUserDto {
-  @IsNotEmpty({ message: 'UserName is mandatory' })
-  @IsString({ message: 'UserName must be text' })
-  username: string;
+  @IsNotEmpty({ message: 'userName is mandatory' })
+  @IsString({ message: 'userName must be text' })
+  userName: string;
 
-  @IsNotEmpty({ message: 'UserName is mandatory' })
-  @IsString({ message: 'UserName must be text' })
+  @IsNotEmpty({ message: 'userName is mandatory' })
+  @IsString({ message: 'userName must be text' })
   name: string;
 
   @IsNotEmpty({ message: 'Email is mandatory' })

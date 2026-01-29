@@ -9,18 +9,18 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }).exec();
+  async findOne(userName: string): Promise<User | null> {
+    return this.userModel.findOne({ userName }).exec();
   }
 
-  async findOneWithPassword(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }).select('+password').exec();
+  async findOneWithPassword(userName: string): Promise<User | null> {
+    return this.userModel.findOne({ userName }).select('+password').exec();
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    const { username, name, email, password, hobbies } = createUserDto;
+    const { userName, name, email, password, hobbies } = createUserDto;
 
-    const existingUser = await this.userModel.findOne({ username }).exec();
+    const existingUser = await this.userModel.findOne({ userName }).exec();
 
     if (existingUser) {
       throw new ConflictException('This user name already exist');
@@ -29,7 +29,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10); // 10 rondes de salt
 
     const newUser = new this.userModel({
-      username,
+      userName,
       password: hashedPassword,
       name,
       email,

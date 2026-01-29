@@ -7,7 +7,9 @@ import {
   Max,
   MinLength,
   MaxLength,
+  IsEnum,
 } from 'class-validator';
+import { Hobby } from 'src/common/enums/hobby.enum';
 
 export class CreateEventDto {
   @IsNotEmpty({ message: 'El título es obligatorio' })
@@ -24,9 +26,8 @@ export class CreateEventDto {
   @MaxLength(500, { message: 'La descripción no puede superar 500 caracteres' })
   description: string;
 
-  @IsNotEmpty({ message: 'La categoría es obligatoria' })
-  @IsString({ message: 'La categoría debe ser una cadena de texto' })
-  category: string;
+  @IsEnum(Hobby)
+  hobby: Hobby;
 
   @IsNotEmpty({ message: 'La fecha es obligatoria' })
   @IsDateString(
