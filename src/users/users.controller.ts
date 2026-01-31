@@ -25,6 +25,7 @@ export class UsersController {
       email: string;
       hobbies: Hobby[];
       password?: string;
+      createdAt: Date;
     };
 
     return {
@@ -33,6 +34,7 @@ export class UsersController {
       name: userObject.name,
       email: userObject.email,
       hobbies: userObject.hobbies,
+      createdAt: userObject.createdAt,
     };
   }
 }

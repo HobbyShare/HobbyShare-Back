@@ -4,7 +4,7 @@ import { Hobby } from 'src/common/enums/hobby.enum';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
   _id: Types.ObjectId;
 
@@ -22,6 +22,8 @@ export class User {
 
   @Prop({ type: [String], enum: Hobby, required: true })
   hobbies: Hobby[];
+
+  createdAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
