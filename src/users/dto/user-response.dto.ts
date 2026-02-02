@@ -7,4 +7,5 @@ export class UserResponseDto {
   name: string;
   email: string;
   hobbies: Hobby[];
+  createdAt?: Date;
 }
