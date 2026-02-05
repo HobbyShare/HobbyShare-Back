@@ -17,6 +17,10 @@ export class UsersService {
     return this.userModel.findOne({ userName }).select('+password').exec();
   }
 
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+  }
+
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const { userName, name, email, password, hobbies } = createUserDto;
 
