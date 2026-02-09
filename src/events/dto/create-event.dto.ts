@@ -34,7 +34,7 @@ export class CreateEventDto {
     {},
     { message: 'La fecha debe tener formato ISO 8601 (YYYY-MM-DD)' },
   )
-  date: string;
+  date: Date;
 
   @IsNotEmpty({ message: 'La latitud es obligatoria' })
   @IsNumber({}, { message: 'La latitud debe ser un número' })
