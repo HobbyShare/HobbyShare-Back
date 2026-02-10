@@ -1,11 +1,12 @@
 import { Hobby } from './../common/enums/hobby.enum';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDocument } from './schemas/user.schema';
 import { UserResponseDto } from './dto/user-response.dto';
 import { Types } from 'mongoose';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Users') // Agrupa les endpoints a Swagger
 @Controller('users')
@@ -36,5 +37,20 @@ export class UsersController {
       hobbies: userObject.hobbies,
       createdAt: userObject.createdAt,
     };
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.usersService.findAll();
+
+    return users.map((user) => ({
+      id: user._id.toString(),
+      userName: user.userName,
+      name: user.name,
+      email: user.email,
+      hobbies: user.hobbies,
+      createdAt: user.createdAt,
+    }));
   }
 }
