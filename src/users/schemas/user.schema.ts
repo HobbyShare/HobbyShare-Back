@@ -1,33 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { Hobby } from 'src/common/enums/hobby.enum';
 
-export type BookDocument = Book & Document;
+export type UserDocument = User & Document;
 
-@Schema({ timestamps: true }) // Habilitem timestamps per createdAt i updatedAt
-export class Book {
-  @Prop({ required: true, trim: true })
-  title: string;
+@Schema({ timestamps: true })
+export class User {
+  _id: Types.ObjectId;
 
-  @Prop({ required: true, trim: true })
-  author: string;
+  @Prop({ required: true, unique: true })
+  userName: string;
 
-  @Prop({
-    type: Number,
-    min: [1000, "L'any ha de ser superior a 1000"],
-    max: [new Date().getFullYear(), "L'any no pot ser futur"]
-  })
-  year?: number;
+  @Prop({ required: true })
+  name: string;
 
-  @Prop({
-    unique: true,
-    validate: {
-      validator: function(v: string) {
-        return /^(?:\d{9}[\dXx]|\d{13})$/.test(v);
-      },
-      message: (props: any) => `${props.value} no és un ISBN vàlid!`
-    }
-  })
-  isbn?: string;
+  @Prop({ required: true, unique: true })
+  email: string;
+
+  @Prop({ required: true, select: false }) // 'select: false' per evitar retornar la contrasenya per defecte
+  password: string; // Guardarem la contrasenya hasheada
+
+  @Prop({ type: [String], enum: Hobby, required: true })
+  hobbies: Hobby[];
+
+  createdAt?: Date;
 }
 
-export const BookSchema = SchemaFactory.createForClass(Book);
+export const UserSchema = SchemaFactory.createForClass(User);

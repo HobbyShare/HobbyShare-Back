@@ -1,50 +1,54 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book, BookDocument } from './schemas/book.schema';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { User, UserDocument } from './schemas/user.schema';
+import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class BooksService {
-  constructor(@InjectModel(Book.name) private bookModel: Model<BookDocument>) {}
+export class UsersService {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findAll(): Promise<Book[]> {
-    return this.bookModel.find().exec();
+  async findOne(userName: string): Promise<User | null> {
+    return this.userModel.findOne({ userName }).exec();
   }
 
-  async findOne(id: string): Promise<Book> {
-    const book = await this.bookModel.findById(id).exec();
-    if (!book) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
-    }
-    return book;
+  async findOneWithPassword(userName: string): Promise<User | null> {
+    return this.userModel.findOne({ userName }).select('+password').exec();
+
   }
 
-  async create(createBookDto: CreateBookDto): Promise<Book> {
-    try {
-      const createdBook = new this.bookModel(createBookDto);
-      return await createdBook.save();
-    } catch (error) {
-      if (error.code === 11000) { // Codi d'error de MongoDB per a duplicats
-        throw new ConflictException("L'ISBN ja existeix.");
-      }
-      throw error; // Re-llençar altres errors
-    }
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
-    const existingBook = await this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true, runValidators: true }).exec();
-    if (!existingBook) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
+  async create(createUserDto: CreateUserDto): Promise<UserDocument> {
+    const { userName, name, email, password, hobbies } = createUserDto;
+
+    const existingUser = await this.userModel.findOne({ userName }).exec();
+
+    if (existingUser) {
+      throw new ConflictException('This user name already exist');
     }
-    return existingBook;
+
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 rondes de salt
+
+    const newUser = new this.userModel({
+      userName,
+      password: hashedPassword,
+      name,
+      email,
+      hobbies,
+    });
+
+    return newUser.save();
   }
 
-  async remove(id: string): Promise<void> {
-    const result = await this.bookModel.deleteOne({ _id: id }).exec();
-    if (result.deletedCount === 0) {
-      throw new NotFoundException(`Llibre amb ID "${id}" no trobat.`);
-    }
+  async validatePassword(
+    passwordPlain: string,
+    hashedPasswordFromDb: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(passwordPlain, hashedPasswordFromDb);
   }
 }
