@@ -8,10 +8,7 @@ async function bootstrap() {
 
   // Enable CORS for frontend
   app.enableCors({
-    origin: [
-      'http://localhost:4200',
-      'https://hobby-share-front-nereas-projects-1dce2134.vercel.app',
-    ],
+    origin: ['http://localhost:4200', /\.vercel\.app$/],
 
     credentials: true,
   });
