@@ -8,10 +8,9 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-    'http://localhost:4200',
-    'https://hobby-share-front-git-main-nereas-projects-1dce2134.vercel.app'
-  ],
-    
+      'http://localhost:4200',
+      'https://hobby-share-front-git-main-nereas-projects-1dce2134.vercel.app',
+    ],
   });
 
   app.useGlobalPipes(
