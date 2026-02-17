@@ -23,6 +23,10 @@ export class UsersService {
 
   }
 
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+  }
+
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const { userName, name, email, password, hobbies } = createUserDto;
 
@@ -32,7 +36,7 @@ export class UsersService {
       throw new ConflictException('This user name already exist');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 rondes de salt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new this.userModel({
       userName,
