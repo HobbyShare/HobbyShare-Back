@@ -42,41 +42,11 @@ export class EventsController {
     return this.eventsService.create(createEventDto, user);
   }
 
-interface RequestWithUser extends Request {
-  user: {
-    userId: string;
-    userName: string;
-    _id: string;
-  };
-}
-
-@Controller('events')
-export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
-
-  // CREATE - Crear un evento
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  async create(
-    @Body() createEventDto: CreateEventDto,
-    @Req() req: RequestWithUser, // Aquí vendrá req.user del JWT
-  ) {
-    // TEMPORAL: mientras no tenga JWT, simula el usuario
-    const user = {
-      userId: req.user.userId,
-      userName: req.user.userName,
-    };
-
-    return this.eventsService.create(createEventDto, user); // 👈 Cuando tengas JWT
-  }
-
-  // READ - Obtener todos los eventos
   @Get()
   async findAll() {
     return this.eventsService.findAll();
   }
 
-  // READ - Obtener un evento por ID
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
@@ -88,7 +58,6 @@ export class EventsController {
     return this.eventsService.findByCreator(req.user.userId);
   }
 
-  // UPDATE - Actualizar un evento
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   async update(
@@ -99,7 +68,6 @@ export class EventsController {
     return this.eventsService.update(id, updateEventDto, req.user.userId);
   }
 
-  // DELETE - Eliminar un evento
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
