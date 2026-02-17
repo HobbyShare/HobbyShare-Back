@@ -11,6 +11,6 @@ import { UsersController } from './users.controller';
 
   providers: [UsersService],
   controllers: [UsersController],
-  exports: [UsersService], // Essential for AuthModule to use UsersService
+  exports: [UsersService],
 })
 export class UsersModule {}

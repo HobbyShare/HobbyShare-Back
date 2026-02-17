@@ -15,8 +15,6 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterUserDto): Promise<{ message: string }> {
-    // UsersService ja gestiona la comprovació de duplicats i el hashing
-
     await this.usersService.create(registerDto);
 
     return { message: 'Usuari registrat correctament' };
@@ -27,8 +25,7 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException('Credencials invàlides');
-    } // Aquesta crida obté la contrasenya hasheada de la BD (ja que no és `select: false` al model)
-    // I la compara amb la contrasenya plana proporcionada
+    }
 
     const isPasswordValid = await this.usersService.validatePassword(
       loginDto.password,
@@ -38,7 +35,7 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credencials invàlides');
-    } // El payload del JWT hauria de ser lleuger i no contenir informació sensible
+    }
 
     const payload = { userName: user.userName, sub: user._id };
 

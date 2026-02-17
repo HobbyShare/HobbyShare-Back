@@ -8,7 +8,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { Types } from 'mongoose';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('Users') // Agrupa les endpoints a Swagger
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -31,7 +31,7 @@ export class UsersController {
 
     return {
       id: userObject._id.toString(),
-      userName: userObject.userName, // Mapeo del nombre de campo
+      userName: userObject.userName,
       name: userObject.name,
       email: userObject.email,
       hobbies: userObject.hobbies,

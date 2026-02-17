@@ -14,7 +14,7 @@ import {
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'; // Cuando se implemente
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 interface RequestWithUser extends Request {
   user: {
@@ -28,71 +28,62 @@ interface RequestWithUser extends Request {
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
-  // CREATE - Crear un evento
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() createEventDto: CreateEventDto,
-    @Req() req: RequestWithUser, // Aquí vendrá req.user del JWT
+    @Req() req: RequestWithUser,
   ) {
-    // TEMPORAL: mientras no tenga JWT, simula el usuario
     const user = {
       userId: req.user.userId,
       userName: req.user.userName,
     };
 
-    return this.eventsService.create(createEventDto, user); // 👈 Cuando tengas JWT
+    return this.eventsService.create(createEventDto, user);
   }
 
-  // READ - Obtener todos los eventos
   @Get()
   async findAll() {
     return this.eventsService.findAll();
   }
 
-  // READ - Obtener un evento por ID
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
   }
 
-  // READ - Obtener eventos del usuario autenticado
   @Get('user/my-events')
-  @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  @UseGuards(JwtAuthGuard)
   async findMyEvents(@Req() req: RequestWithUser) {
     return this.eventsService.findByCreator(req.user.userId);
   }
 
-  // UPDATE - Actualizar un evento
   @Put(':id')
-  @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
     @Req() req: RequestWithUser,
   ) {
-    return this.eventsService.update(id, updateEventDto, req.user.userId); // Cuando tenga JWT
+    return this.eventsService.update(id, updateEventDto, req.user.userId);
   }
 
-  // DELETE - Eliminar un evento
   @Delete(':id')
-  @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
-  @HttpCode(HttpStatus.NO_CONTENT) // Devuelve 204 en lugar de 200
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string, @Req() req: RequestWithUser) {
-    return this.eventsService.remove(id, req.user.userId); // Cuando tenga JWT
+    return this.eventsService.remove(id, req.user.userId);
   }
 
-  // BONUS - Apuntarse a un evento
   @Post(':id/join')
-  @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  @UseGuards(JwtAuthGuard)
   async joinEvent(@Param('id') id: string, @Req() req: RequestWithUser) {
-    return this.eventsService.addParticipant(id, req.user.userId); // Cuando tenga JWT
+    return this.eventsService.addParticipant(id, req.user.userId);
   }
 
-  // BONUS - Salirse de un evento
   @Delete(':id/leave')
-  @UseGuards(JwtAuthGuard) // Descomentar cuando esté el guard
+  @UseGuards(JwtAuthGuard)
   async leaveEvent(@Param('id') id: string, @Req() req: RequestWithUser) {
-    return this.eventsService.removeParticipant(id, req.user.userId); // Cuando tenga JWT
+    return this.eventsService.removeParticipant(id, req.user.userId);
   }
 }
