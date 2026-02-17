@@ -7,8 +7,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:4200',
-    credentials: true,
+    origin: [
+    'http://localhost:4200',
+    'https://hobby-share-front-git-main-nereas-projects-1dce2134.vercel.app'
+  ],
+    
   });
 
   app.useGlobalPipes(
