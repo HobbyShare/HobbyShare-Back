@@ -4,7 +4,7 @@ import { Hobby } from 'src/common/enums/hobby.enum';
 
 export type EventDocument = Event & Document;
 
-@Schema({ timestamps: true }) // Habilitem timestamps per createdAt i updatedAt
+@Schema({ timestamps: true })
 export class Event {
   @Prop({ required: true, trim: true, minlength: 3, maxlength: 100 })
   title: string;
@@ -16,7 +16,7 @@ export class Event {
   hobby: Hobby[];
 
   @Prop({ required: true })
-  date: string;
+  date: Date;
 
   @Prop({ required: true, min: -90, max: 90 })
   lat: number;

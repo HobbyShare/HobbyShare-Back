@@ -17,8 +17,8 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true, select: false }) // 'select: false' per evitar retornar la contrasenya per defecte
-  password: string; // Guardarem la contrasenya hasheada
+  @Prop({ required: true, select: false })
+  password: string;
 
   @Prop({ type: [String], enum: Hobby, required: true })
   hobbies: Hobby[];

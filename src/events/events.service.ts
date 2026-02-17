@@ -14,7 +14,7 @@ import { Event } from './schemas/event.schema';
 export class EventsService {
   constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
 
-  // CREATE
+
   async create(createEventDto: CreateEventDto, user: { userId: string, userName: string }) {
     const newEvent = new this.eventModel({
       ...createEventDto,
@@ -26,12 +26,12 @@ export class EventsService {
     return newEvent.save();
   }
 
-  // READ ALL
+  
   async findAll() {
     return this.eventModel.find().exec();
   }
 
-  // READ ONE
+  
   async findOne(id: string) {
     const event = await this.eventModel.findById(id).exec();
     
@@ -42,16 +42,16 @@ export class EventsService {
     return event;
   }
 
-  // READ BY CREATOR
+ 
   async findByCreator(userId: string) {
     return this.eventModel.find({ creatorId: userId }).exec();
   }
 
-  // UPDATE
+
   async update(id: string, updateEventDto: UpdateEventDto, userId: string) {
     const event = await this.findOne(id);
 
-    // Verificar que el usuario sea el creador
+    
     if (event.creatorId !== userId) {
       throw new ForbiddenException('No tienes permiso para editar este evento');
     }
@@ -63,11 +63,11 @@ export class EventsService {
     return updatedEvent;
   }
 
-  // DELETE
+ 
   async remove(id: string, userId: string) {
     const event = await this.findOne(id);
 
-    // 🔒 Verificar que el usuario sea el creador
+    
     if (event.creatorId !== userId) {
       throw new ForbiddenException('No tienes permiso para eliminar este evento');
     }
@@ -76,7 +76,7 @@ export class EventsService {
     return { message: 'Evento eliminado correctamente' };
   }
 
-  // Apuntarse a un evento
+
   async addParticipant(eventId: string, userId: string) {
     const event = await this.findOne(eventId);
 
@@ -88,7 +88,7 @@ export class EventsService {
     return event.save();
   }
 
-  // Salirse de un evento
+
   async removeParticipant(eventId: string, userId: string) {
     const event = await this.findOne(eventId);
 

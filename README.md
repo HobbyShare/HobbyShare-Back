@@ -1,98 +1,272 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# HobbyShare
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A social platform for connecting people through shared hobbies and activities.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+1. [Overview](#1-overview)
+2. [Key Features](#2-key-features)
+3. [Tech Stack](#3-tech-stack)
+4. [Getting Started](#4-getting-started)
+5. [Project Structure](#5-project-structure)
+6. [Authentication Flow](#6-authentication-flow)
+7. [API Endpoints](#7-api-endpoints)
+8. [Event Categories](#8-event-categories)
+9. [Testing](#9-testing)
+10. [Map Integration](#10-map-integration)
+11. [Calendar Features](#11-calendar-features)
+12. [Dashboard Analytics](#12-dashboard-analytics)
+13. [Security Features](#13-security-features)
+14. [Decisions and Justifications](#14-decisions-and-justifications)
+15. [Project Screenshots](#15-project-screenshots)
+16. [Demo](#16-demo)
+17. [Team](#17-team)
+18. [License](#18-license)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 1. Overview
 
-## Project setup
+HobbyShare is a full-stack web application that enables users to create, discover, and join hobby-based events. Users can view events on an interactive map, manage them through a visual calendar, and track participation metrics via an analytics dashboard.
+
+## 2. Key Features
+
+- **User Authentication**: Secure JWT-based registration and login with bcrypt password hashing
+- **Event Management**: Full CRUD operations for hobby events with category filtering
+- **Interactive Map**: Leaflet-powered map with event markers and location selection
+- **Visual Calendar**: FullCalendar integration displaying events with date filtering
+- **Analytics Dashboard**: Chart.js visualizations for events by category and monthly trends
+- **Participant System**: Join/leave events with real-time participant tracking
+- **Responsive Design**: Mobile-first design with Tailwind CSS
+
+## 3. Tech Stack
+
+**Frontend**
+- Angular 21 with Signals for reactive state management
+- Tailwind CSS for styling
+- Leaflet for interactive maps
+- FullCalendar for event calendar
+- Chart.js for data visualization
+- Vitest for testing
+
+**Backend**
+- NestJS framework with TypeScript
+- MongoDB with Mongoose ODM
+- JWT authentication with Passport
+- class-validator for DTO validation
+- bcrypt for password security
+- Jest for testing
+- Swagger for API documentation
+
+## 4. Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- MongoDB (local or Atlas cluster)
+- npm or yarn
+
+### Backend Setup
 
 ```bash
-$ npm install
+cd backend
+npm install
 ```
 
-## Compile and run the project
+Create `.env` file:
+
+```env
+MONGODB_URI=mongodb+srv://your-connection-string
+PORT=3000
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION_TIME=3600s
+```
+
+Start the server:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Run tests
+API available at `http://localhost:3000`  
+Swagger docs at `http://localhost:3000/api-docs`
+
+### Frontend Setup
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cd frontend
+npm install
+ng serve
 ```
 
-## Deployment
+Application available at `http://localhost:4200`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 5. Project Structure
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```
+backend/
+├── src/
+│   ├── auth/           # JWT authentication & guards
+│   ├── users/          # User management & profiles
+│   ├── events/         # Event CRUD with participants
+│   └── common/         # Shared enums & utilities
+│
+frontend/
+└── src/app/
+    ├── auth/           # Login & registration components
+    ├── core/
+    │   ├── services/   # API services (auth, events, map, calendar)
+    │   ├── models/     # TypeScript interfaces
+    │   └── enums/      # Hobby categories
+    ├── events/
+    │   ├── calendar/           # FullCalendar view
+    │   ├── event-detail/       # Event details page
+    │   ├── event-form/         # Create/edit form
+    │   ├── events-list/        # Events listing
+    │   ├── map/                # Leaflet map component
+    │   └── location-picker-modal/  # Location selection
+    ├── dashboard/
+    │   ├── dashboard/          # Dashboard view
+    │   ├── bar-chart/          # Bar-chart component
+    │   ├── line-chart/         # Line-chart component
+    │   ├── pie-chart/          # Pie-chart component
+    └── shared/         # Reusable components
+```
 
+## 6. Authentication Flow
+
+1. User registers with username, email, password, and hobby preferences
+2. Password is hashed using bcrypt (10 rounds)
+3. User logs in and receives a JWT token
+4. Token stored in localStorage and sent via Authorization header
+5. JwtAuthGuard protects routes requiring authentication
+6. Token payload contains username and userId for authorization
+
+## 7. API Endpoints
+
+**Authentication**
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login and receive JWT token
+
+**Events**
+- `GET /events` - Get all events
+- `GET /events/:id` - Get event by ID
+- `GET /events/user/my-events` - Get current user's events (protected)
+- `POST /events` - Create event (protected)
+- `PUT /events/:id` - Update event (protected)
+- `DELETE /events/:id` - Delete event (protected)
+- `POST /events/:id/join` - Join event (protected)
+- `DELETE /events/:id/leave` - Leave event (protected)
+
+## 8. Event Categories
+
+Music | Sports | Art/Creativity | Technology | Reading | Video Games | Cooking | Nature | Wellness | Photography
+
+## 9. Testing
+
+**Backend Tests**
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cd backend
+npm run test          # Unit tests
+npm run test:e2e      # End-to-end tests
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**Frontend Tests**
+```bash
+cd frontend
+npm run test          # Vitest tests
+```
 
-## Resources
+## 10. Map Integration
 
-Check out a few resources that may come in handy when working with NestJS:
+- Leaflet with OpenStreetMap tiles
+- Click-to-select location during event creation
+- Draggable markers for precise positioning
+- Event markers with popup details
+- User geolocation support
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 11. Calendar Features
 
-## Support
+- Month/week/day grid views
+- Event filtering by date
+- Click event to view details
+- Integration with event service
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 12. Dashboard Analytics
 
-## Stay in touch
+- Events by hobby category (bar chart)
+- Events by month (line chart)
+- Real-time participant statistics
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 13. Security Features
 
-## License
+- Password hashing with bcrypt
+- JWT token-based authentication
+- HTTP-only token storage
+- Protected API routes with guards
+- Input validation with class-validator
+- CORS configuration for frontend
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 14. Decisions and Justifications
+
+### Architecture Decisions
+
+**Angular Signals over RxJS**  
+We chose Angular 21's Signals for state management to simplify reactivity and reduce boilerplate compared to traditional RxJS observables. Signals provide better performance and easier debugging while maintaining reactive patterns.
+
+**NestJS for Backend**  
+NestJS was selected for its TypeScript-first approach, built-in dependency injection, and modular architecture. Its decorators and structure align well with Angular's patterns, creating consistency across the stack.
+
+**MongoDB over SQL**  
+We chose MongoDB for its flexible schema, which is ideal for rapid prototyping and evolving event structures. The document model naturally fits our nested data (events with participants arrays).
+
+### Technical Decisions
+
+**JWT in localStorage**  
+While sessionStorage or httpOnly cookies are more secure, localStorage was chosen for simplicity in this learning project and ease of token management across tabs.
+
+**Leaflet over Google Maps**  
+Leaflet with OpenStreetMap provides a free, open-source mapping solution without API key requirements, making it ideal for a student project.
+
+**Tailwind CSS**  
+Tailwind's utility-first approach accelerated development and ensured consistent styling without writing custom CSS files.
+
+### Feature Decisions
+
+**Location Picker Modal**  
+Rather than inline map editing, we implemented a modal for location selection to provide a focused, distraction-free experience when choosing event locations.
+
+**Participant Array in Events**  
+Storing participant IDs directly in the event document (denormalized) allows faster queries for participant counts without joins, at the cost of potential consistency issues.
+
+## 15. Project Screenshots
+
+### Login & Registration
+![Login Screen](/public/login-register.gif)
+
+
+### Events Management & Map
+![Events List and Detail](/public/events-list-detail.gif)
+
+![Create Event Form](/public/event-form-map.gif)
+
+### Calendar & Dashboard
+![Analytics Dashboard](/public/CalendarGraficos.gif)
+
+## 16. Demo
+
+Access the live demo: [HobbyShare Demo](https://your-demo-url-here.com)
+
+**Test Credentials:**
+- Username: `demo`
+- Password: `demo123`
+
+## 17. Team
+
+Developed as a collaborative learning project demonstrating full-stack development skills with modern frameworks and best practices.
+
+## 18. License
+
+Educational project - created for learning purposes.
+
+---
+
+**Note**: This is a student project showcasing proficiency in Angular, NestJS, MongoDB, authentication, real-time updates, mapping services, and responsive design patterns.
