@@ -6,14 +6,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { ConfigService } from '@nestjs/config';
 
-import { UsersService } from '../users/users.service'; // Per trobar l'usuari a la BD si cal
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
 
-    private usersService: UsersService, // Opcional, si necessites carregar l'usuari complet
+    private usersService: UsersService,
   ) {
     const jwtSecret = configService.get<string>('JWT_SECRET');
 
@@ -26,25 +26,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
       ignoreExpiration: false,
 
-      secretOrKey: jwtSecret, // Explicitly type as string
+      secretOrKey: jwtSecret,
     });
-  } // El mètode `validate` es crida un cop el token és decodificat i verificat
+  }
 
   async validate(payload: { userName: string; sub: string }) {
-    // `payload` és l'objecte que vam signar en el login: { userName, sub: _id }
-
-    // Aquí pots fer una comprovació addicional, com buscar l'usuari a la BD
-
     const user = await this.usersService.findOne(payload.userName);
 
     if (!user) {
       throw new UnauthorizedException('Usuari no trobat o token invàlid.');
-    } // Retornar l'usuari adjunta l'objecte d'usuari a `req.user`
+    }
 
     return {
-      userId: payload.sub, // ⬅️ El _id del usuario
-      userName: payload.userName, // ⬅️ El username
-      _id: user._id, // ⬅️ También incluir el objeto completo si lo necesitas
+      userId: payload.sub,
+      userName: payload.userName,
+      _id: user._id,
     };
   }
 }

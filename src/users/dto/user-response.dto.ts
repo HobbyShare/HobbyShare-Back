@@ -1,4 +1,3 @@
-// src/users/dto/user-response.dto.ts
 import { Hobby } from '../../common/enums/hobby.enum';
 
 export class UserResponseDto {

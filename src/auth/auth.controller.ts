@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto, LoginUserDto } from './dto/auth.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
-@ApiTags('Autenticació') // Agrupa les rutes a Swagger
+@ApiTags('Autenticació')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -34,7 +34,7 @@ export class AuthController {
     schema: { example: { access_token: 'eyJhbGciOiJIUzI1Ni...' } },
   })
   @ApiResponse({ status: 401, description: 'Credencials invàlides' })
-  @HttpCode(HttpStatus.OK) // Retorna explícitament 200 OK
+  @HttpCode(HttpStatus.OK)
   @UsePipes(
     new ValidationPipe({
       whitelist: true,
