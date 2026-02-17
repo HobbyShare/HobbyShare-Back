@@ -15,6 +15,16 @@ export class UsersService {
 
   async findOneWithPassword(userName: string): Promise<User | null> {
     return this.userModel.findOne({ userName }).select('+password').exec();
+
+  }
+
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+
+  }
+
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
   }
 
   async findAll(): Promise<UserDocument[]> {

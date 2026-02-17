@@ -16,7 +16,7 @@ export class Event {
   hobby: Hobby[];
 
   @Prop({ required: true })
-  date: string;
+  date: Date;
 
   @Prop({ required: true, min: -90, max: 90 })
   lat: number;
